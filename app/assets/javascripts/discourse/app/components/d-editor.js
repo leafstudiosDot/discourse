@@ -477,7 +477,7 @@ export default Component.extend(TextareaTextManipulation, {
       key: "#",
       afterComplete: (value) => {
         this.set("value", value);
-        return this._focusTextArea();
+        return schedule("afterRender", this, this._focusTextArea);
       },
       transformComplete: (obj) => {
         return obj.text;
@@ -504,7 +504,7 @@ export default Component.extend(TextareaTextManipulation, {
       key: ":",
       afterComplete: (text) => {
         this.set("value", text);
-        this._focusTextArea();
+        schedule("afterRender", this, this._focusTextArea);
       },
 
       onKeyUp: (text, cp) => {
@@ -512,9 +512,10 @@ export default Component.extend(TextareaTextManipulation, {
           return false;
         }
 
-        const matches = /(?:^|[\s.\?,@\/#!%&*;:\[\]{}=\-_()])(:(?!:).?[\w-]*:?(?!:)(?:t\d?)?:?) ?$/gi.exec(
-          text.substring(0, cp)
-        );
+        const matches =
+          /(?:^|[\s.\?,@\/#!%&*;:\[\]{}=\-_()])(:(?!:).?[\w-]*:?(?!:)(?:t\d?)?:?) ?$/gi.exec(
+            text.substring(0, cp)
+          );
 
         if (matches && matches[1]) {
           return [matches[1]];
