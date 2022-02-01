@@ -271,7 +271,9 @@ export default Component.extend({
 
   _formatTime(options) {
     options.forEach((option) => {
-      option.timeFormatted = option.time.format(I18n.t(option.timeFormatKey));
+      if (option.time && option.timeFormatKey) {
+        option.timeFormatted = option.time.format(I18n.t(option.timeFormatKey));
+      }
     });
   },
 
