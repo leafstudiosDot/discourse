@@ -20,6 +20,7 @@ import {
 } from "discourse/lib/uploads";
 import { cacheShortUploadUrl } from "pretty-text/upload-short-url";
 import bootbox from "bootbox";
+import { run } from "@ember/runloop";
 
 // Note: This mixin is used _in addition_ to the ComposerUpload mixin
 // on the composer-editor component. It overrides some, but not all,
@@ -284,6 +285,9 @@ export default Mixin.create(ExtendableUploader, UppyS3Multipart, {
     });
 
     this._uppyInstance.on("upload-success", (file, response) => {
+      if (!this._uppyInstance) {
+        return;
+      }
       this._removeInProgressUpload(file.id);
       let upload = response.body;
       const markdown = this.uploadMarkdownResolvers.reduce(
@@ -319,11 +323,13 @@ export default Mixin.create(ExtendableUploader, UppyS3Multipart, {
       // only do the manual cancelling work if the user clicked cancel
       if (this.userCancelled) {
         Object.values(this.placeholders).forEach((data) => {
-          this.appEvents.trigger(
-            `${this.eventPrefix}:replace-text`,
-            data.uploadPlaceholder,
-            ""
-          );
+          run(() => {
+            this.appEvents.trigger(
+              `${this.eventPrefix}:replace-text`,
+              data.uploadPlaceholder,
+              ""
+            );
+          });
         });
 
         this.set("userCancelled", false);
