@@ -110,7 +110,7 @@ gem 'omniauth-google-oauth2'
 gem 'oj', '3.13.2'
 
 gem 'pg'
-gem 'mini_sql'
+gem 'mini_sql', git: "https://github.com/discourse/mini_sql", branch: "activerecord-lock"
 gem 'pry-rails', require: false
 gem 'pry-byebug', require: false
 gem 'r2', require: false
